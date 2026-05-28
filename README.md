@@ -1,81 +1,135 @@
-================================================
-RANSOMWARE SIMULATION
-================================================
+# SOC Ransomware Simulator
 
-OVERVIEW:
-This project simulates ransomware behavior in an
-isolated VM lab environment for educational purposes.
+## Overview
 
-HOW IT WORKS:
-1. SCANNING
-   - The malware scans a target folder for files
-   - Targets extensions: .txt .jpg .png .pdf .docx
+This project is an educational ransomware simulation designed for SOC Analyst training and malware analysis practice within isolated virtual lab environments.
 
-2. ENCRYPTION
-   - Each file is encrypted using Fernet (AES-128)
-   - A unique encryption key is generated per session
-   - Original files are deleted after encryption
-   - Encrypted files get a .locked extension
+The simulation demonstrates the core stages of a ransomware attack, including file discovery, encryption, ransom note deployment, and data recovery through decryption. It is intended to help cybersecurity students and analysts better understand ransomware behavior, detection opportunities, and defensive strategies.
 
-3. RANSOM NOTE
-   - A ransom note is dropped in the target folder
-   - Demands fake BTC payment (simulation only)
-   - Contains fake wallet address and deadline
+---
 
-4. DECRYPTION
-   - The decryptor uses the saved encryption.key
-   - Restores all .locked files to original state
-   - Removes .locked files after restoring
+# Features
 
-================================================
-REAL WORLD COMPARISON:
-================================================
-Real ransomware examples: WannaCry, LockBit, REvil
+## File Scanning
 
-Our simulation vs real ransomware:
-- Encryption method : Same (AES)
-- File targeting    : Same (scan and encrypt)
-- Ransom note       : Same concept
-- Key management    : We save locally (real sends to C2)
-- Spreading         : We dont spread (real uses exploits)
+The simulator scans a specified target directory for commonly targeted file types, including:
 
-================================================
-SOC ANALYST - HOW TO DETECT THIS:
-================================================
-Indicators of Compromise (IoCs):
+* `.txt`
+* `.jpg`
+* `.png`
+* `.pdf`
+* `.docx`
 
-1. Mass file renaming in short time period
-2. New .locked extensions appearing on files
-3. High disk write activity from one process
-4. New file created: READ_ME_RANSOM.txt
-5. Encryption key file created on disk
+---
 
-SIEM Alert Rules to Create:
-- Alert on mass file extension changes
-- Alert on rapid file deletion + creation
-- Alert on known ransom note filenames
+## File Encryption
 
-================================================
-DEFENSIVE MEASURES:
-================================================
-1. Regular offline backups (3-2-1 rule)
-2. EDR solution to detect mass file changes
-3. Least privilege - limit user file access
-4. Network segmentation to stop spreading
-5. Disable RDP if not needed
-6. Keep systems patched and updated
+* Uses the Python Cryptography library with Fernet (AES-128)
+* Generates a unique encryption key for each execution
+* Encrypts targeted files and appends the `.locked` extension
+* Removes original files after successful encryption
 
-================================================
-TOOLS USED:
-================================================
-- Python 3
-- Cryptography library (Fernet/AES-128)
-- Kali Linux VM (isolated lab)
-- VMware Workstation
+---
 
-================================================
-DISCLAIMER:
-This is a strictly educational simulation.
-Built for SOC Analyst training purposes only.
-Never run outside an isolated lab environment.
-================================================
+## Ransom Note Simulation
+
+The program creates a simulated ransom note within the target directory containing:
+
+* Fake cryptocurrency payment instructions
+* Simulated wallet address
+* Mock payment deadline
+
+This behavior replicates common techniques used by real-world ransomware families.
+
+---
+
+## File Decryption
+
+A separate decryptor utility is included to restore encrypted files.
+
+The decryptor:
+
+* Uses the locally stored `encryption.key`
+* Decrypts `.locked` files back to their original format
+* Removes encrypted copies after restoration
+
+---
+
+# Real-World Ransomware Comparison
+
+Examples of real ransomware families:
+
+* WannaCry
+* LockBit
+* REvil
+
+| Feature           | Simulation    | Real Ransomware     |
+| ----------------- | ------------- | ------------------- |
+| AES Encryption    | Yes           | Yes                 |
+| File Targeting    | Yes           | Yes                 |
+| Ransom Notes      | Yes           | Yes                 |
+| Key Management    | Local Storage | Remote C2 Servers   |
+| Network Spreading | No            | Often Uses Exploits |
+
+---
+
+# Detection Opportunities for SOC Analysts
+
+## Indicators of Compromise (IoCs)
+
+* Mass file renaming within a short timeframe
+* Sudden appearance of `.locked` file extensions
+* High disk write activity from a single process
+* Creation of ransom note files
+* Encryption key artifacts stored locally
+
+---
+
+## Suggested SIEM Detection Rules
+
+* Detect rapid file extension changes
+* Monitor excessive file deletion and recreation activity
+* Alert on known ransom note filenames
+* Identify abnormal encryption-related process behavior
+
+---
+
+# Defensive Measures
+
+Recommended security controls against ransomware attacks:
+
+1. Maintain offline and immutable backups (3-2-1 strategy)
+2. Deploy EDR/XDR solutions for behavioral monitoring
+3. Enforce least privilege access controls
+4. Implement network segmentation
+5. Disable unnecessary remote access services such as RDP
+6. Regularly patch and update operating systems and software
+
+---
+
+# Technologies Used
+
+* Python 3
+* Cryptography Library (Fernet / AES-128)
+* Kali Linux Virtual Machine
+* VMware Workstation
+
+---
+
+# Lab Environment
+
+This project should only be executed in:
+
+* Isolated virtual machines
+* Controlled cybersecurity labs
+* Offline testing environments
+
+Do not execute on production systems or personal devices.
+
+---
+
+# Disclaimer
+
+This project was created strictly for educational and defensive cybersecurity purposes.
+
+The author does not support or condone malicious activity, unauthorized access, or deployment outside controlled lab environments. Users are solely responsible for ensuring ethical and legal usage.
